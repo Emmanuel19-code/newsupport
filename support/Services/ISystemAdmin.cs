@@ -10,5 +10,10 @@ namespace support.Service
         Task<ApiDataResponse<List<SystemAdmins>>> AllAdmin();
         Task<ApiResponse> StartConversation(CreateConversationRequest request,Guid TicketId);
         Task<ApiResponse> AssignToAdmin(AssignedToAdmin request);
+        Task<List<Ticket>> AllReceivedTickets();
+        Task<List<Ticket>> MyAssignedTicket(string AdminUserName);
+        Task<ApiDataResponse<List<CompanyProfile>>>  GetSupportingCompanies();
+        Task<ApiResponse> TerminateSupport(Guid companyId);
+        Task<ApiResponse> RenewSupport(Guid companyId);
     }
 }

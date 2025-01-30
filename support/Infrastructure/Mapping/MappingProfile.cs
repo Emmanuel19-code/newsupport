@@ -7,7 +7,7 @@ namespace support.Infrastructure
     {
         public MappingProfile()
         {
-            CreateMap<Users,UserProfile>();
+            CreateMap<Users,CompanyProfile>();
             CreateMap<SystemAdminDb,SystemAdmins>();
         }
     }

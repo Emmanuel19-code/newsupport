@@ -169,16 +169,6 @@ namespace support.Service
                 StatusCode = 200
             };
         }
-        public async Task<ApiDataResponse<List<UserProfile>>>  GetSupportingCompanies()
-        {
-            var companies = await _context.Users.ToListAsync();
-            var companyProfile = _mapper.Map<List<UserProfile>>(companies);
-            return new ApiDataResponse<List<UserProfile>>
-            {
-                Data = companyProfile,
-                Success = true,
-            };
-        }
         public Task<List<Ticket>> GetAllSupportTickets(Guid userId)
         {
             throw new NotImplementedException();
@@ -278,12 +268,13 @@ namespace support.Service
 
                 };
             }
-            var ticket = new Conversation
+            var ticket = new Tickets
              {
                 ConversationTitle = request.TicketTitle,
                 CreatedBy = request.CreatedBy,
+                CompanyName = request.CompanyName
              };
-             await _context.Conversations.AddAsync(ticket);
+             await _context.Tickets.AddAsync(ticket);
              await _context.SaveChangesAsync();
              return new ApiResponse
              {

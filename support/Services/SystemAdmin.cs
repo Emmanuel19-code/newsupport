@@ -62,7 +62,7 @@ namespace support.Service
                 AdminUserEmail = request.AdminUserEmail,
                 AdminPassword = hashpass,
                 AssignedTo = request.AssignedTo,
-                Role = request.Role == "User" ? "User" : "SuperAdmin",
+                Role = request.Role == "Admin" ? "Admin" : "SuperAdmin",
             };
             await _context.SystemAdmins.AddAsync(addAdmin);
             await _context.SaveChangesAsync();
@@ -176,7 +176,7 @@ namespace support.Service
         //Start Conversation
         public async Task<ApiResponse> StartConversation(CreateConversationRequest request, Guid TicketId)
         {
-            var ticket = await _context.Conversations.FindAsync(TicketId);
+            var ticket = await _context.Tickets.FindAsync(TicketId);
             if (ticket == null)
             {
                 return new ApiResponse
@@ -198,8 +198,8 @@ namespace support.Service
             }
             var conversationParticipants = new ConversationParticipants
             {
-                UserId = request.CreatorId,
-                AdminId = request.SystemAdminId,
+                TicketCreator = request.TicketCreator,
+                AdminUserName = request.AdminUserName,
                 ConversationId = TicketId
             };
             await _context.Participants.AddAsync(conversationParticipants);
@@ -211,7 +211,19 @@ namespace support.Service
                 StatusCode = 201
             };
         }
-
+        public async Task<List<Ticket>> AllReceivedTickets()
+        {
+            var tickets = await _context.Tickets.ToListAsync();
+            var ticketList = tickets.Select(ticket => new Ticket
+            {
+                Id = ticket.Id,
+                ConversationStatus = ticket.ConversationStatus,
+                ConversationTitle = ticket.ConversationTitle,
+                CreatedBy = ticket.CreatedBy,
+                CreatedAt = ticket.CreatedAt,
+            }).ToList();
+            return ticketList;
+        }
         public async Task<ApiResponse> AssignToAdmin(AssignedToAdmin request)
         {
             if (request == null)
@@ -224,7 +236,7 @@ namespace support.Service
                 };
             }
 
-            var ticket = await _context.Conversations.FindAsync(request.TicketId);
+            var ticket = await _context.Tickets.FindAsync(request.TicketId);
             if (ticket == null)
             {
                 return new ApiResponse
@@ -234,11 +246,17 @@ namespace support.Service
                     StatusCode = 404
                 };
             }
-
+            if (!string.IsNullOrEmpty(ticket.AssignedTo))
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = $"Ticket Has already been Assigned to {ticket.AssignedTo}",
+                    StatusCode = 404
+                };
+            }
             ticket.AssignedTo = request.AdminUserName;
             await _context.SaveChangesAsync();
-
-            // Return success response
             return new ApiResponse
             {
                 Success = true,
@@ -246,8 +264,108 @@ namespace support.Service
                 StatusCode = 200
             };
         }
-
-
+        public async Task<List<Ticket>> MyAssignedTicket(string AdminUserName)
+        {
+            var assignedTickets = await _context.Tickets
+                                                .Where(ticket => ticket.AssignedTo == AdminUserName)
+                                                .ToListAsync();
+            var assigned = assignedTickets.Select(assigned=> new Ticket{
+                Id = assigned.Id,
+                ConversationTitle = assigned.ConversationTitle,
+                ConversationStatus = assigned.ConversationStatus,
+                CreatedBy = assigned.CreatedBy,
+                CreatedAt = assigned.CreatedAt
+            }).ToList();
+            return assigned;
+        }
+         public async Task<ApiDataResponse<List<CompanyProfile>>>  GetSupportingCompanies()
+        {
+            var companies = await _context.Users.ToListAsync();
+            var companyProfile = _mapper.Map<List<CompanyProfile>>(companies);
+            return new ApiDataResponse<List<CompanyProfile>>
+            {
+                Data = companyProfile,
+                Success = true,
+            };
+        }
+        public async Task<ApiResponse> TerminateSupport(Guid companyId)
+        {
+            if(companyId == null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Please provide details",
+                    StatusCode = 400
+                };
+            }
+            var company = await _context.Users.FindAsync(companyId);
+            if(company == null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "No Match Found",
+                    StatusCode  = 404
+                };
+            }
+            if(company.Supporting == false)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Support Already Terminated",
+                    StatusCode = 400
+                };
+            }
+            company.Supporting = false;
+            await _context.SaveChangesAsync();
+            return new ApiResponse
+            {
+                Success = true,
+                Message = "Support Terminated",
+                StatusCode = 200
+            };
+        }
+        public async Task<ApiResponse> RenewSupport(Guid companyId)
+        {
+            if(companyId == null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Please provide details",
+                    StatusCode = 400
+                };
+            }
+            var company = await _context.Users.FindAsync(companyId);
+            if(company == null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "No Match Found",
+                    StatusCode  = 404
+                };
+            }
+            if(company.Supporting == true)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Already Renewed",
+                    StatusCode = 400
+                };
+            }
+            company.Supporting = true;
+            await _context.SaveChangesAsync();
+            return new ApiResponse
+            {
+                Success = true,
+                Message = "Support Terminated",
+                StatusCode = 200
+            };
+        }
         //Function To Generate Password
         private string GeneratePassword()
         {
@@ -310,7 +428,7 @@ namespace support.Service
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
 
-
+        
     }
 }
 

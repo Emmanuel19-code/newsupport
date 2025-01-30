@@ -387,3 +387,6 @@ C:\Users\Emmanuel\Desktop\newsupport\support\obj\Debug\net9.0\staticwebassets.pa
 C:\Users\Emmanuel\Desktop\newsupport\support\obj\Debug\net9.0\support.csproj.Up2Date
 C:\Users\Emmanuel\Desktop\newsupport\support\obj\Debug\net9.0\support.genruntimeconfig.cache
 C:\Users\Emmanuel\Desktop\newsupport\support\obj\Debug\net9.0\ref\support.dll
+C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\MySqlConnector.dll
+C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\User\Desktop\C#Tut\newsupport\support\obj\Debug\net9.0\support.sourcelink.json

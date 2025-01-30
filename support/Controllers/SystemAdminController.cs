@@ -30,7 +30,7 @@ namespace support.Controllers
             return response;
         }
 
-        [HttpGet("reset_password/{adminUserName}")]
+        [HttpPut("reset_password/{adminUserName}")]
         public async Task<ApiDataResponse<string>> ResetPassword(string adminUserName)
         {
             var response = await _systemAdmin.ResetAdminPassword(adminUserName);
@@ -50,15 +50,59 @@ namespace support.Controllers
             var response = await _systemAdmin.StartConversation(request,TicketId);
             return response;
         }
+
+        [HttpPost("assign_ticket")]
+        public async Task<ApiResponse> AssignTicketToAdmin(AssignedToAdmin request)
+        {
+            var response = await _systemAdmin.AssignToAdmin(request);
+            return response;
+        }
+
+        [HttpGet("received_tickets")]
+        public async Task<List<Ticket>> ReceivedTickets()
+        {
+            var response  = await _systemAdmin.AllReceivedTickets();
+            return response;
+        }
+
+        [HttpGet("my_assigned_ticket/{AdminUserName}")]
+        public async Task<List<Ticket>> MyAssignedTicket(string AdminUserName)
+        {
+            var response = await _systemAdmin.MyAssignedTicket(AdminUserName);
+            return response;
+        }
+
+        [HttpGet("supportComapnies")]
+        public async Task<ApiDataResponse<List<CompanyProfile>>> AllRegistered()
+        {
+            var response = await _systemAdmin.GetSupportingCompanies();
+            return response;
+        }
+
+        [HttpPut("terminate_support/{companyId}")]
+        public async Task<ApiResponse> TerminateComapnySupport(Guid companyId)
+        {
+            var response = await _systemAdmin.TerminateSupport(companyId);
+            return response;
+        }
+
+        [HttpPut("renew_support/{companyId}")]
+        public async Task<ApiResponse> RenewCompanySupport(Guid companyId)
+        {
+             var response = await _systemAdmin.RenewSupport(companyId);
+            return response;
+        }
     }
 
 }
 /*
-"adminUserName": "Emmanuel2875",
-"adminPassword": "OWMq5oc[?n3T"
-"newpassword" : G<[+[L$8O%aw
+"adminUserName": "Emmanuel4887",
+"adminPassword": "{rgX[07BAePf"
+"newpassword" : l+6$%rm%6Z5$
 
+"adminUserName": "Solomon3494",
+"adminPassword": "f+cn-rKe5CL1"
 
-userPassword = 8LO.;u}T<,mb,
-userName = TGTS7188
+userPassword = p}.5zB!G#:|x,
+userName = TGTS2933
 */

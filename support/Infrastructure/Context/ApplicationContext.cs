@@ -11,7 +11,7 @@ namespace support.Infrastructure
 
         public DbSet<Users> Users { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Tickets> Tickets { get; set; }
         public DbSet<ConversationParticipants> Participants { get; set; }
         public DbSet<PasswordResetLogs> PasswordResetLogs { get; set; }
         public DbSet<RefreshTokenDb> RefreshTokenDb { get; set; }

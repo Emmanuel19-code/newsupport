@@ -37,12 +37,7 @@ namespace support.Controllers
         }
 
         [Authorize("Admin")]
-        [HttpGet("registerdComapies")]
-        public async Task<ApiDataResponse<List<UserProfile>>> AllRegistered()
-        {
-            var response = await _userManageService.GetSupportingCompanies();
-            return response;
-        }
+        
 
         [HttpPost("create_ticket")]
         public async Task<ApiResponse> CreateTicket(CreateTicket request)
