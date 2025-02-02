@@ -62,7 +62,7 @@ namespace support.Service
                 AdminUserEmail = request.AdminUserEmail,
                 AdminPassword = hashpass,
                 AssignedTo = request.AssignedTo,
-                Role = request.Role == "User"?"User":"SuperAdmin",
+                Role = request.Role == "User" ? "User" : "SuperAdmin",
             };
             await _context.SystemAdmins.AddAsync(addAdmin);
             await _context.SaveChangesAsync();
@@ -212,6 +212,42 @@ namespace support.Service
             };
         }
 
+        public async Task<ApiResponse> AssignToAdmin(AssignedToAdmin request)
+        {
+            if (request == null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Please provide the right Information",
+                    StatusCode = 400
+                };
+            }
+
+            var ticket = await _context.Conversations.FindAsync(request.TicketId);
+            if (ticket == null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Ticket Not Available",
+                    StatusCode = 404
+                };
+            }
+
+            ticket.AssignedTo = request.AdminUserName;
+            await _context.SaveChangesAsync();
+
+            // Return success response
+            return new ApiResponse
+            {
+                Success = true,
+                Message = "Ticket successfully assigned",
+                StatusCode = 200
+            };
+        }
+
+
         //Function To Generate Password
         private string GeneratePassword()
         {
@@ -274,10 +310,7 @@ namespace support.Service
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
 
-        public Task<ApiResponse> AssignToAdmin(string TicketId)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
 

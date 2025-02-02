@@ -9,6 +9,6 @@ namespace support.Service
         Task<ApiDataResponse<string>> ResetAdminPassword(string AdminUserName);
         Task<ApiDataResponse<List<SystemAdmins>>> AllAdmin();
         Task<ApiResponse> StartConversation(CreateConversationRequest request,Guid TicketId);
-        Task<ApiResponse> AssignToAdmin(string TicketId);
+        Task<ApiResponse> AssignToAdmin(AssignedToAdmin request);
     }
 }

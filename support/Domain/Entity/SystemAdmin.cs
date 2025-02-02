@@ -7,7 +7,7 @@ namespace support.Domain
     public string AdminUserEmail { get; set; }
     public string AdminPassword { get; set; }
     public string AssignedTo { get; set; }
-    public string Role { get; set; } = "SuperAdmin"; // Default role
+    public string Role { get; set; } = "SuperAdmin"; 
     public string RefreshToken { get; set; } = string.Empty;
     public DateTime RefreshTokenExpiry { get; set; }
     public DateTime LastLoggedIn { get; set; }

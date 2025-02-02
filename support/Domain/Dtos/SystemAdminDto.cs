@@ -25,4 +25,9 @@ namespace support.Domain
         public string Role {get;set;} 
         public DateTime LastLoggedIn {get;set;}
     }
+    public class AssignedToAdmin
+    {
+        public string AdminUserName { get; set; }
+        public Guid TicketId { get; set; }
+    }
 }

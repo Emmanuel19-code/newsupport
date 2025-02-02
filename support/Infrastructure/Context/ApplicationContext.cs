@@ -16,5 +16,6 @@ namespace support.Infrastructure
         public DbSet<PasswordResetLogs> PasswordResetLogs { get; set; }
         public DbSet<RefreshTokenDb> RefreshTokenDb { get; set; }
         public DbSet<SystemAdminDb> SystemAdmins { get; set; }
+       
     }
 }
