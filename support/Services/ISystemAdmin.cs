@@ -15,5 +15,6 @@ namespace support.Service
         Task<ApiDataResponse<List<CompanyProfile>>>  GetSupportingCompanies();
         Task<ApiResponse> TerminateSupport(Guid companyId);
         Task<ApiResponse> RenewSupport(Guid companyId);
+        Task<ApiResponse> AddCompany(AddUserDto request);
     }
 }

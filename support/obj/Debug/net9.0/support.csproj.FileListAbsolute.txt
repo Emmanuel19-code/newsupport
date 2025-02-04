@@ -390,3 +390,8 @@ C:\Users\Emmanuel\Desktop\newsupport\support\obj\Debug\net9.0\ref\support.dll
 C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\MySqlConnector.dll
 C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\User\Desktop\C#Tut\newsupport\support\obj\Debug\net9.0\support.sourcelink.json
+C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\System.Net.WebSockets.WebSocketProtocol.dll
+C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
+C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\MailKit.dll
+C:\Users\User\Desktop\C#Tut\newsupport\support\bin\Debug\net9.0\MimeKit.dll

@@ -14,14 +14,6 @@ namespace support.Controllers
         {
                 _userManageService = userManageService;
         }
-
-        [HttpPost("create")]
-        public async Task<ApiResponse> AddNewSupport(AddUserDto request)
-        {
-            var response = await _userManageService.AddUser(request);
-            return response;
-        }
-
         [HttpPost("access")]
         public async Task<ApiDataResponse<string>> LoginAccess(AccessDetails request)
         {

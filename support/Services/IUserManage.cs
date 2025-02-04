@@ -6,7 +6,6 @@ namespace support.Service
 {
     public interface IUserManageService
     {
-        Task<ApiResponse> AddUser(AddUserDto request);
         Task<ApiDataResponse<string>> AccessSystem(AccessDetails request);
         Task<ApiDataResponse<string>> RefreshAccessToken(Guid Id);
         Task<List<Ticket>> GetAllSupportTickets(Guid userId);

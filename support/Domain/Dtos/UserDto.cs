@@ -2,6 +2,7 @@ namespace support.Domain
 {
     public class AddUserDto
     {
+        public required string Email {get;set;}
         public required string CompanyName {get;set;}
         public int SupportMonth {get;set;}
     }

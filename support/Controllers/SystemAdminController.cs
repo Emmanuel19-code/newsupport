@@ -92,6 +92,13 @@ namespace support.Controllers
              var response = await _systemAdmin.RenewSupport(companyId);
             return response;
         }
+
+        [HttpPost("add_new_support_company")]
+        public async Task<ApiResponse> AddNewCompany(AddUserDto request)
+        {
+            var response = await _systemAdmin.AddCompany(request);
+            return response;
+        }
     }
 
 }
@@ -105,4 +112,11 @@ namespace support.Controllers
 
 userPassword = p}.5zB!G#:|x,
 userName = TGTS2933
+
+company = GIS9113
+password = 2[]YSZONd^rY
+
+company = SAPCLIENT
+password = O|i1viNS<Zk
+
 */

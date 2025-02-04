@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using support.Infrastructure;
 using support.Service;
+using support.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,11 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 
-
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IUserManageService, UserManageService>();
 builder.Services.AddScoped<ISystemAdmin, SystemAdmin>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IEmailService,EmailService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -49,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 //using sql server
-builder.Services.AddDbContext<ApplicationDbContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //using mysql
 //builder.Services.AddDbContext<ApplicationDbContext>(options=>options.UseMySql(builder.Configuration.GetConnectionString("MySqlConnection"), new MySqlServerVersion(new Version(8, 0, 30))));
 builder.Services.AddControllers();
@@ -72,9 +74,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 var app = builder.Build();
-
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -82,7 +81,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+//Mapping the SignalR to a route
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.UseHttpsRedirection();
 app.MapControllers();

@@ -22,61 +22,7 @@ namespace support.Service
             _configuration = configuration;
             _mapper = mapper;
         }
-        public async Task<ApiResponse> AddUser(AddUserDto request)
-        {
-            if (request == null)
-            {
-                return new ApiResponse
-                {
-                    Success = false,
-                    Message = "Please Provide the appropriate Information",
-                    StatusCode = 400
-                };
-            }
-            var company = await _context.Users.FirstOrDefaultAsync(c => c.CompanyName == request.CompanyName);
-            if (company != null)
-            {
-                return new ApiResponse
-                {
-                    Success = false,
-                    Message = "Already Supporting",
-                    StatusCode = 400
-                };
-            }
-            var password = GeneratePassword();
-            var hashpass = new PasswordHasher<Users>().HashPassword(null, password);
-            var username = GenerateUserName(request.CompanyName);
-            var existingUser = await _context.Users.FirstOrDefaultAsync(e => e.UserName == username);
-
-            if (existingUser != null)
-            {
-                return new ApiResponse
-                {
-                    Success = false,
-                    Message = "Username is in use",
-                    StatusCode = 400
-                };
-            }
-
-            var expiryDate = CalculateExpiryData(request.SupportMonth);
-
-            var user = new Users
-            {
-                CompanyName = request.CompanyName,
-                Password = hashpass,
-                UserName = username,
-                SupportExpiry = expiryDate,
-            };
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return new ApiResponse
-            {
-                Success = true,
-                StatusCode = 200,
-                Message = $"Successfully Added {password}"
-            };
-        }
-
+        
         public async Task<ApiDataResponse<string>> AccessSystem(AccessDetails request)
         {
             if (request == null)
@@ -196,10 +142,7 @@ namespace support.Service
             return $"{companyName}{randomNumber}";
         }
 
-        private DateTime CalculateExpiryData(int period)
-        {
-            return DateTime.Now.AddMonths(period);
-        }
+       
         private string CreateToken(Users user)
         {
             var claims = new List<Claim>{

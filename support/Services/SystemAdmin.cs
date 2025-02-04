@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using support.Domain;
 using support.Infrastructure;
+using support.Services;
 
 namespace support.Service
 {
@@ -16,11 +17,13 @@ namespace support.Service
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public SystemAdmin(ApplicationDbContext context, IConfiguration configuration, IMapper mapper)
+        private readonly IEmailService _emailService;
+        public SystemAdmin(ApplicationDbContext context, IConfiguration configuration, IMapper mapper,IEmailService emailService)
         {
             _context = context;
             _configuration = configuration;
             _mapper = mapper;
+            _emailService = emailService;
         }
         //Creating A New system Admin
         public async Task<ApiDataResponse<CreatedResponse>> AddSystemAdmin(NewSystemAdmin request)
@@ -320,6 +323,7 @@ namespace support.Service
             }
             company.Supporting = false;
             await _context.SaveChangesAsync();
+            await _emailService.SendEmailAsync(company.CompanyName,company.Email,"TERMINATION OF SUPPORT PROVISION","You support has been successfully terminated");
             return new ApiResponse
             {
                 Success = true,
@@ -362,8 +366,61 @@ namespace support.Service
             return new ApiResponse
             {
                 Success = true,
-                Message = "Support Terminated",
+                Message = "Support Renewed",
                 StatusCode = 200
+            };
+        }
+        public async Task<ApiResponse> AddCompany(AddUserDto request)
+        {
+             if (request == null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Please Provide the appropriate Information",
+                    StatusCode = 400
+                };
+            }
+            var company = await _context.Users.FirstOrDefaultAsync(c => c.CompanyName == request.CompanyName);
+            if (company != null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Already Supporting",
+                    StatusCode = 400
+                };
+            }
+            var password = GeneratePassword();
+            var hashpass = new PasswordHasher<Users>().HashPassword(null, password);
+            var username = GenerateUserName(request.CompanyName);
+            var existingUser = await _context.Users.FirstOrDefaultAsync(e => e.UserName == username);
+
+            if (existingUser != null)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = "Username is in use",
+                    StatusCode = 400
+                };
+            }
+            var expiryDate = CalculateExpiryData(request.SupportMonth);
+            var user = new Users
+            {
+                Email = request.Email,
+                CompanyName = request.CompanyName,
+                Password = hashpass,
+                UserName = username,
+                SupportExpiry = expiryDate,
+            };
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return new ApiResponse
+            {
+                Success = true,
+                StatusCode = 200,
+                Message = $"Successfully Added {password}"
             };
         }
         //Function To Generate Password
@@ -427,7 +484,10 @@ namespace support.Service
             );
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
-
+         private DateTime CalculateExpiryData(int period)
+        {
+            return DateTime.Now.AddMonths(period);
+        }
         
     }
 }
