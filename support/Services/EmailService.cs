@@ -24,7 +24,6 @@ namespace support.Services
            mail.To.Add(new MailboxAddress(CompanyName,To));
            mail.Subject = Subject;
            mail.Body = new TextPart(TextFormat.Html) { Text = Body };
-            Console.WriteLine(_email,_password);
            using var client = new SmtpClient(); 
            client.Connect("smtp.gmail.com", 587,  SecureSocketOptions.StartTls); 
            client.Authenticate(_email,_password);

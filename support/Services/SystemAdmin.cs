@@ -423,6 +423,7 @@ namespace support.Service
                 Message = $"Successfully Added {password}"
             };
         }
+       
         //Function To Generate Password
         private string GeneratePassword()
         {
@@ -465,11 +466,11 @@ namespace support.Service
         //Creating the AccessToken
         private string CreateToken(SystemAdminDb systemAdmin)
         {
-            Console.WriteLine($"this is details {systemAdmin}");
+            Console.WriteLine($"this is details {systemAdmin.Role} {systemAdmin.AdminUserName} {systemAdmin.Id}");
             var claims = new List<Claim>{
                 new Claim(ClaimTypes.Name,systemAdmin.AdminUserName),
                 new Claim(ClaimTypes.NameIdentifier,systemAdmin.Id.ToString()),
-                new Claim(ClaimTypes.Role,systemAdmin.Role)
+                 new Claim(ClaimTypes.Role, systemAdmin.Role)
              };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("AppSettings:Token")!));
@@ -488,6 +489,7 @@ namespace support.Service
         {
             return DateTime.Now.AddMonths(period);
         }
+
         
     }
 }

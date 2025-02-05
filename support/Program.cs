@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using support.Infrastructure;
@@ -14,12 +15,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 
+
+
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IUserManageService, UserManageService>();
 builder.Services.AddScoped<ISystemAdmin, SystemAdmin>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IEmailService,EmailService>();
+builder.Services.AddScoped<IMessageService,MessageService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -73,6 +77,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 });
 
+
+//Adding Authorization policy
+builder.Services.AddAuthorization(options=>options.AddPolicy("SuperAdmin",policy=>policy.RequireRole("SuperAdmin")));
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -84,9 +92,16 @@ if (app.Environment.IsDevelopment())
 //Mapping the SignalR to a route
 app.MapHub<NotificationHub>("/notificationHub");
 
+//Serving Static Files
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Upload")),
+    RequestPath = "/Upload"
+});
+
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseAuthorization();
-app.UseAuthentication();
+//app.UseAuthentication();
 app.Run();
 

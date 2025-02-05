@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using support.Domain;
 using support.Service;
@@ -29,7 +30,7 @@ namespace support.Controllers
             var response = await _systemAdmin.AccessSystem(request);
             return response;
         }
-
+        [Authorize("SuperAdmin")]
         [HttpPut("reset_password/{adminUserName}")]
         public async Task<ApiDataResponse<string>> ResetPassword(string adminUserName)
         {
@@ -99,6 +100,8 @@ namespace support.Controllers
             var response = await _systemAdmin.AddCompany(request);
             return response;
         }
+
+        
     }
 
 }
